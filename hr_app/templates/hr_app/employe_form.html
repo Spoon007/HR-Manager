@@ -1,0 +1,60 @@
+{% extends 'hr_app/base.html' %}
+
+{% block title %}{{ title }} - HR-Manager{% endblock %}
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Informations de l'Employé</h6>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nom</label>
+                            {{ form.nom }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Prénom</label>
+                            {{ form.prenom }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Poste</label>
+                            {{ form.type_poste }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Salaire</label>
+                            {{ form.salaire }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date d'embauche</label>
+                            {{ form.date_embauche }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Département</label>
+                            {{ form.departement }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Dernier Diplôme</label>
+                        {{ form.dernier_diplome }}
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'employe_list' %}" class="btn btn-secondary">Annuler</a>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

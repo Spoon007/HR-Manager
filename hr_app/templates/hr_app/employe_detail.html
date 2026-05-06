@@ -1,0 +1,57 @@
+{% extends 'hr_app/base.html' %}
+
+{% block title %}Détails de {{ employe }} - HR-Manager{% endblock %}
+{% block header %}Détails de l'Employé{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Fiche Individuelle</h6>
+                <div>
+                    <a href="{% url 'employe_update' employe.pk %}" class="btn btn-sm btn-primary">Modifier</a>
+                    <a href="{% url 'employe_archive' employe.pk %}" class="btn btn-sm btn-danger">Archiver</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-3 text-center">
+                        <img src="https://ui-avatars.com/api/?name={{ employe.prenom }}+{{ employe.nom }}&size=128&background=random" class="rounded-circle shadow-sm mb-3">
+                        <h4>{{ employe.prenom }} {{ employe.nom }}</h4>
+                        <p class="text-muted">{{ employe.type_poste }}</p>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-sm-4 text-muted">Département</div>
+                            <div class="col-sm-8 mb-2">{{ employe.departement.nom_service }} ({{ employe.departement.lieu }})</div>
+                            
+                            <div class="col-sm-4 text-muted">Salaire Actuel</div>
+                            <div class="col-sm-8 mb-2"><strong>{{ employe.salaire }} €</strong></div>
+                            
+                            <div class="col-sm-4 text-muted">Date d'embauche</div>
+                            <div class="col-sm-8 mb-2">{{ employe.date_embauche|date:"d F Y" }}</div>
+                            
+                            <div class="col-sm-4 text-muted">Ancienneté</div>
+                            <div class="col-sm-8 mb-2">{{ employe.calculer_anciennete }} ans</div>
+                            
+                            <div class="col-sm-4 text-muted">Dernier Diplôme</div>
+                            <div class="col-sm-8 mb-2">{{ employe.dernier_diplome }}</div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h5>Informations Contractuelles</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Type de contrat :</strong> {{ employe.contrat.type_contrat|default:"Non spécifié" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Fin de contrat :</strong> {{ employe.contrat.date_fin|default:"N/A" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

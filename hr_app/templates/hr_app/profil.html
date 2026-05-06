@@ -1,0 +1,34 @@
+{% extends 'hr_app/base.html' %}
+
+{% block title %}Mon Profil - HR-Manager{% endblock %}
+{% block header %}Mon Profil{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-body text-center">
+                <img src="https://ui-avatars.com/api/?name={{ user.username }}&size=128&background=4e73df&color=fff" class="rounded-circle shadow-sm mb-3">
+                <h2>{{ user.username }}</h2>
+                <p class="text-muted">{{ user.email }}</p>
+                <hr>
+                {% if employe %}
+                    <div class="text-start">
+                        <p><strong>Poste :</strong> <span class="badge bg-info text-dark">{{ employe.type_poste }}</span></p>
+                        <p><strong>Département :</strong> {{ employe.departement.nom_service }}</p>
+                        <p><strong>Date d'embauche :</strong> {{ employe.date_embauche|date:"d F Y" }}</p>
+                        <p><strong>Ancienneté :</strong> {{ employe.calculer_anciennete }} ans</p>
+                        <p><strong>Dernier Diplôme :</strong> {{ employe.dernier_diplome }}</p>
+                    </div>
+                    {% if user.is_staff %}
+                        <a href="{% url 'employe_detail' employe.pk %}" class="btn btn-primary mt-3">Voir ma fiche complète (Admin)</a>
+                    {% endif %}
+                {% else %}
+                    <p class="text-warning">Aucune fiche employé n'est liée à cet utilisateur.</p>
+                    <p class="small text-muted">Note : Dans cette démo, le lien se fait par correspondance Nom/Prénom.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

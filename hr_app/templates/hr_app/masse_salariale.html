@@ -1,0 +1,77 @@
+{% extends 'hr_app/base.html' %}
+{% load l10n %}
+
+{% block title %}Statistiques - HR-Manager{% endblock %}
+{% block header %}Statistiques & Masse Salariale{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Répartition par Département</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Département</th>
+                                <th>Masse Salariale</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in stats %}
+                            <tr>
+                                <td>{{ stat.departement__nom_service }}</td>
+                                <td><strong>{{ stat.total|floatformat:2 }} €</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Graphique de la Masse Salariale</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="salaryChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const ctx = document.getElementById('salaryChart').getContext('2d');
+    const labels = [{% for stat in stats %}"{{ stat.departement__nom_service }}",{% endfor %}];
+    const data = [{% for stat in stats %}{{ stat.total|unlocalize }},{% endfor %}];
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Masse Salariale (€)',
+                data: data,
+                backgroundColor: 'rgba(78, 115, 223, 0.5)',
+                borderColor: 'rgba(78, 115, 223, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

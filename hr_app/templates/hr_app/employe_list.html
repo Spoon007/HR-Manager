@@ -1,0 +1,72 @@
+{% extends 'hr_app/base.html' %}
+
+{% block title %}Liste des Employés - HR-Manager{% endblock %}
+{% block header %}Gestion du Personnel{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Liste des Employés</h6>
+        <a href="{% url 'employe_create' %}" class="btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Nouvel Employé
+        </a>
+    </div>
+    <div class="card-body">
+        <!-- Filtres -->
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <input type="text" name="q" class="form-control" placeholder="Rechercher par nom..." value="{{ request.GET.q }}">
+            </div>
+            <div class="col-md-3">
+                <select name="poste" class="form-select">
+                    <option value="">Tous les postes</option>
+                    <option value="Manager" {% if request.GET.poste == 'Manager' %}selected{% endif %}>Manager</option>
+                    <option value="Développeur" {% if request.GET.poste == 'Développeur' %}selected{% endif %}>Développeur</option>
+                    <option value="RH" {% if request.GET.poste == 'RH' %}selected{% endif %}>RH</option>
+                    <option value="Commercial" {% if request.GET.poste == 'Commercial' %}selected{% endif %}>Commercial</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Poste</th>
+                        <th>Département</th>
+                        <th>Salaire</th>
+                        <th>Ancienneté</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employe in employes %}
+                    <tr>
+                        <td>{{ employe.nom }}</td>
+                        <td>{{ employe.prenom }}</td>
+                        <td><span class="badge bg-info">{{ employe.type_poste }}</span></td>
+                        <td>{{ employe.departement.nom_service }}</td>
+                        <td>{{ employe.salaire }} €</td>
+                        <td>{{ employe.calculer_anciennete }} ans</td>
+                        <td>
+                            <a href="{% url 'employe_detail' employe.pk %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></a>
+                            <a href="{% url 'employe_update' employe.pk %}" class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></a>
+                            <a href="{% url 'employe_archive' employe.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Archiver cet employé ?')"><i class="fas fa-archive"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">Aucun employé trouvé.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

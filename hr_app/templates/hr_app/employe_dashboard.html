@@ -1,0 +1,116 @@
+{% extends 'hr_app/base.html' %}
+
+{% block title %}Mon Dashboard - HR-Manager{% endblock %}
+{% block header %}Mon Tableau de Bord{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Bienvenue -->
+    <div class="col-lg-12 mb-4">
+        <div class="card shadow bg-primary text-white border-0">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h2 class="font-weight-bold">Bonjour, {{ user.first_name }} !</h2>
+                        <p class="lead mb-0">Ravi de vous revoir. Voici un aperçu de votre situation au sein de l'entreprise.</p>
+                    </div>
+                    <div class="col-auto d-none d-md-block">
+                        <i class="fas fa-user-circle fa-4x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if employe %}
+    <!-- Ma Situation -->
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card shadow h-100 py-2 border-left-info">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Mon Poste</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ employe.type_poste }}</div>
+                <div class="text-muted small">{{ employe.departement.nom_service }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card shadow h-100 py-2 border-left-success">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Ancienneté</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ employe.calculer_anciennete }} ans</div>
+                <div class="text-muted small">Arrivé le {{ employe.date_embauche|date:"d/m/Y" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card shadow h-100 py-2 border-left-warning">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <a href="{% url 'profil' %}" class="btn btn-warning btn-sm btn-block">Consulter mon profil complet</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mes Collègues -->
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Mes Collègues ({{ employe.departement.nom_service }})</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Poste</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in collegues %}
+                            <tr>
+                                <td>{{ c.prenom }} {{ c.nom }}</td>
+                                <td>{{ c.type_poste }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted">Aucun autre membre dans votre département.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                <h3>Fiche employée non liée</h3>
+                <p class="text-muted">Votre compte utilisateur n'est pas encore lié à une fiche employé. Veuillez contacter l'administration RH.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Informations Entreprise -->
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Notes Internes</h6>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info small">
+                    <i class="fas fa-info-circle"></i> N'oubliez pas de mettre à jour votre diplôme dans votre profil si nécessaire.
+                </div>
+                <div class="alert alert-light border small">
+                    <i class="fas fa-calendar"></i> Prochaine réunion de département : Lundi prochain à 10h.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
