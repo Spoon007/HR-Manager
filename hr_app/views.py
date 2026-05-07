@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Employe, Departement, Contrat
 from .forms import EmployeForm
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from datetime import timedelta
 from django.utils import timezone
 
@@ -41,15 +41,26 @@ def employe_list(request):
     
     query = request.GET.get('q')
     poste = request.GET.get('poste')
+    diplome = request.GET.get('diplome')
     
     employes = Employe.objects.filter(est_archive=False)
     
     if query:
-        employes = employes.filter(nom__icontains=query) | employes.filter(prenom__icontains=query)
+        employes = employes.filter(
+            Q(nom__icontains=query) | 
+            Q(prenom__icontains=query) |
+            Q(departement__nom_service__icontains=query)
+        )
     if poste:
         employes = employes.filter(type_poste=poste)
+    if diplome:
+        employes = employes.filter(dernier_diplome=diplome)
         
-    return render(request, 'hr_app/employe_list.html', {'employes': employes})
+    diplomes = Employe.objects.filter(est_archive=False).values_list('dernier_diplome', flat=True).distinct().order_by('dernier_diplome')
+    return render(request, 'hr_app/employe_list.html', {
+        'employes': employes, 
+        'diplomes': diplomes
+    })
 
 @login_required
 def employe_detail(request, pk):
@@ -103,8 +114,13 @@ def masse_salariale(request):
     if not request.user.is_staff:
         return redirect('employe_dashboard')
     
-    stats = Employe.objects.filter(est_archive=False).values('departement__nom_service').annotate(total=Sum('salaire'))
-    return render(request, 'hr_app/masse_salariale.html', {'stats': stats})
+    stats_dept = Employe.objects.filter(est_archive=False).values('departement__nom_service').annotate(total=Sum('salaire'))
+    stats_poste = Employe.objects.filter(est_archive=False).values('type_poste').annotate(total=Sum('salaire'))
+    
+    return render(request, 'hr_app/masse_salariale.html', {
+        'stats': stats_dept,
+        'stats_poste': stats_poste
+    })
 
 @login_required
 def employe_dashboard(request):

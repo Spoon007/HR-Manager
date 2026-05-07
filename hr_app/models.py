@@ -30,6 +30,8 @@ class Employe(models.Model):
 
     def calculer_anciennete(self):
         today = date.today()
+        if self.date_embauche > today:
+            return 0
         diff = today.year - self.date_embauche.year - ((today.month, today.day) < (self.date_embauche.month, self.date_embauche.day))
         return diff
 

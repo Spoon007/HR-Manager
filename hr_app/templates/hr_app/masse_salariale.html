@@ -45,33 +45,89 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Répartition par Poste</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Type de Poste</th>
+                                <th>Masse Salariale</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in stats_poste %}
+                            <tr>
+                                <td>{{ stat.type_poste }}</td>
+                                <td><strong>{{ stat.total|floatformat:2 }} €</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Graphique par Poste</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="posteChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    const ctx = document.getElementById('salaryChart').getContext('2d');
-    const labels = [{% for stat in stats %}"{{ stat.departement__nom_service }}",{% endfor %}];
-    const data = [{% for stat in stats %}{{ stat.total|unlocalize }},{% endfor %}];
+    // Chart par Département
+    const ctxDept = document.getElementById('salaryChart').getContext('2d');
+    const labelsDept = [{% for stat in stats %}"{{ stat.departement__nom_service }}",{% endfor %}];
+    const dataDept = [{% for stat in stats %}{{ stat.total|unlocalize }},{% endfor %}];
 
-    new Chart(ctx, {
+    new Chart(ctxDept, {
         type: 'bar',
         data: {
-            labels: labels,
+            labels: labelsDept,
             datasets: [{
                 label: 'Masse Salariale (€)',
-                data: data,
+                data: dataDept,
                 backgroundColor: 'rgba(78, 115, 223, 0.5)',
                 borderColor: 'rgba(78, 115, 223, 1)',
                 borderWidth: 1
             }]
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+
+    // Chart par Poste
+    const ctxPoste = document.getElementById('posteChart').getContext('2d');
+    const labelsPoste = [{% for stat in stats_poste %}"{{ stat.type_poste }}",{% endfor %}];
+    const dataPoste = [{% for stat in stats_poste %}{{ stat.total|unlocalize }},{% endfor %}];
+
+    new Chart(ctxPoste, {
+        type: 'bar',
+        data: {
+            labels: labelsPoste,
+            datasets: [{
+                label: 'Masse Salariale (€)',
+                data: dataPoste,
+                backgroundColor: 'rgba(28, 200, 138, 0.5)',
+                borderColor: 'rgba(28, 200, 138, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
     });
 </script>
 {% endblock %}
