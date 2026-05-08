@@ -24,3 +24,6 @@ venv.bak/
 # Custom
 scratch/
 seed_db.py
+seed_extra.py
+fix_db_postes.py
+web.java
