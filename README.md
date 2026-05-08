@@ -80,6 +80,3 @@ L'application sera disponible sur `http://127.0.0.1:8000`.
 
 ## 📜 Licence
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-
----
-*Développé avec ❤️ par Antigravity*

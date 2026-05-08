@@ -61,6 +61,3 @@ Ce document retrace les différentes étapes de conception et de développement 
 - [ ] Système de gestion des congés et absences.
 - [ ] Génération de rapports PDF pour les contrats.
 - [ ] Notifications par email pour les fins de période d'essai.
-
----
-*Généré par Antigravity - Assistant IA*
